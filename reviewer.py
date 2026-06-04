@@ -20,10 +20,10 @@ with open(args.terraform_file, "r") as f:
 rule_findings = check_open_ssh(terraform_code)
 print(rule_findings)
 
-review = review_terraform(terraform_code)
+# review = review_terraform(terraform_code)
 
-for finding in review["findings"]:
-    print(finding["title"])
+# for finding in review["findings"]:
+#     print(finding["title"])
   
 
 
