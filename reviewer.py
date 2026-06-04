@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from terraform_reviewer import review_terraform
 import argparse
 from security_checks import run_security_checks
+from risk_scoring import calculate_score
 
 parser = argparse.ArgumentParser()
 
@@ -22,11 +23,17 @@ ai_review = review_terraform(terraform_code)
 combined_findings = []
 combined_findings.extend(rule_findings)
 combined_findings.extend(ai_review)
+for finding in combined_findings:
+    finding["score"] = calculate_score(finding["severity"])
+
 print(combined_findings)
 
+total_score = sum(
+    finding["score"]
+    for finding in combined_findings
+)
 
-  
-
+print(total_score)
 
 
 
