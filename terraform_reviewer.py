@@ -17,4 +17,13 @@ def review_terraform(terraform_code: str):
     )
 
     raw = response.output_text.strip().removeprefix("```json").removeprefix("```").removesuffix("```").strip()
-    return json.loads(raw)
+    
+    findings = []
+    for finding in json.loads(raw)["findings"]:
+        findings.append({
+            "title": finding["title"],
+            "severity": finding["severity"],
+            "recommendation": finding["recommendation"],
+            "source": "llm"
+        })
+    return findings
