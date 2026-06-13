@@ -21,7 +21,14 @@ def check_open_ssh(terraform_code: str) -> List[Finding]:
     return []
 
 def check_s3_encryption(terraform_code: str, parsed_terraform: Dict[str, Any]) -> List[Finding]:
-    if "aws_s3_bucket" in parsed_terraform.get("resource_types", []):
+    has_s3_bucket = any(
+    resource["type"] == "aws_s3_bucket"
+    for resource in parsed_terraform.get(
+        "resources",
+        []
+    )
+    )
+    if has_s3_bucket:
         if "server_side_encryption_configuration" not in terraform_code:
             return [
                 Finding(

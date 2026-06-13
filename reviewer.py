@@ -33,6 +33,7 @@ state.parsed_terraform = parse_terraform(
     state.terraform_code
 )
 
+
 state.findings.extend(
     run_security_checks(state.terraform_code, state.parsed_terraform)
 )
@@ -71,6 +72,6 @@ state.generated_tests = (
     )
 )
 
-# print("\nGenerated Terratest:")
-# print("=" * 40 + "\n")
-# print(state.generated_tests)
+print("\nGenerated Terratest:")
+print("=" * 40 + "\n")
+print(state.generated_tests)

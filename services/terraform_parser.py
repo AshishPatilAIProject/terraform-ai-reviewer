@@ -7,9 +7,12 @@ def parse_terraform(terraform_code: str):
     )
 
     return {
-        "resource_types": [
-            resource_type
-            for resource_type, _
-            in resources
-        ]
+    "resources": [
+        {
+            "type": resource_type,
+            "name": resource_name
+        }
+        for resource_type, resource_name
+        in resources
+    ]
     }
