@@ -436,6 +436,6 @@ This project was built to learn and explore:
 
 Current Release:
 
-```text
-v0.1.0
+```
+v0.1.0 - Initial Terraform AI Reviewer
 ```
