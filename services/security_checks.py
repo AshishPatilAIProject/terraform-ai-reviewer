@@ -1,10 +1,10 @@
 from typing import List
 from models.finding import Finding
-
-def run_security_checks(terraform_code: str) -> List[Finding]:
+from typing import Dict, Any
+def run_security_checks(terraform_code: str, parsed_terraform: Dict[str, Any]) -> List[Finding]:
     findings: List[Finding] = []
     findings.extend(check_open_ssh(terraform_code))
-    findings.extend(check_s3_encryption(terraform_code))
+    findings.extend(check_s3_encryption(terraform_code, parsed_terraform))
     return findings
 
 
@@ -20,8 +20,8 @@ def check_open_ssh(terraform_code: str) -> List[Finding]:
         ]
     return []
 
-def check_s3_encryption(terraform_code: str) -> List[Finding]:
-    if "aws_s3_bucket" in terraform_code:
+def check_s3_encryption(terraform_code: str, parsed_terraform: Dict[str, Any]) -> List[Finding]:
+    if "aws_s3_bucket" in parsed_terraform.get("resource_types", []):
         if "server_side_encryption_configuration" not in terraform_code:
             return [
                 Finding(
