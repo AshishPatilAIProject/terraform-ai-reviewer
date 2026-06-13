@@ -1,10 +1,10 @@
 # Terraform AI Reviewer
 
-Terraform AI Reviewer is an AI-assisted infrastructure analysis tool that combines deterministic security checks with LLM-powered Terraform reviews.
+Terraform AI Reviewer is an AI-assisted Infrastructure-as-Code (IaC) analysis platform built using Python, OpenAI APIs, Terraform, and LangGraph.
 
-The project analyzes Terraform configurations, detects security issues, calculates risk scores, removes duplicate findings, and generates Terratest test cases.
+The project combines deterministic security checks with LLM-powered Terraform reviews to identify infrastructure risks, calculate risk scores, remove duplicate findings, and generate Terratest test cases.
 
-The goal of the project is to demonstrate how traditional rule engines and modern AI systems can work together to improve Infrastructure-as-Code (IaC) review workflows.
+The workflow is orchestrated using LangGraph, with a shared AnalysisState flowing through multiple analysis nodes.
 
 ---
 
@@ -161,12 +161,15 @@ func TestTerraformModule(t *testing.T) {
 }
 ```
 
+### LangGraph Workflow Orchestration
+
+Coordinates analysis stages using a shared AnalysisState and LangGraph nodes.
+
 ---
 
-## Architecture
-
+## LangGraph Workflow
 ```text
-Terraform File
+AnalysisState
       |
       v
 Terraform Parser
@@ -191,9 +194,25 @@ Security Checks     AI Reviewer
       Terratest Generator
                |
                v
-           Report
+        Updated AnalysisState
 ```
 
+---
+## Shared Workflow State
+
+The application uses a shared AnalysisState object that flows through all LangGraph nodes.
+
+```python
+@dataclass
+class AnalysisState:
+    terraform_code: str
+    parsed_terraform: Dict[str, Any]
+    findings: List[Finding]
+    total_score: int
+    generated_tests: str
+```
+
+Each node reads from and updates the state, allowing analysis stages to remain loosely coupled.
 ---
 
 ## Project Structure
@@ -202,6 +221,9 @@ Security Checks     AI Reviewer
 terraform-ai-reviewer/
 
 ├── reviewer.py
+│
+├── graphs/
+│   └── review_graph.py
 │
 ├── prompts/
 │   ├── security_check_ai_prompt.md
@@ -288,6 +310,10 @@ python reviewer.py sample1.tf
 Example output:
 
 ```text
+Parsed: {'resources': [{'type': 'aws_security_group', 'name': 'web'}]}
+Security Findings: 1
+Total Findings After AI: 2
+Deduplicated: 2 -> 1
 [HIGH] Open Internet Access Detected
 
 Total Risk Score: 10
@@ -340,6 +366,10 @@ python reviewer.py sample2.tf
 Example output:
 
 ```text
+Parsed: {'resources': [{'type': 'aws_s3_bucket', 'name': 'example'}]}
+Security Findings: 1
+Total Findings After AI: 4
+Deduplicated: 4 -> 3
 [HIGH] S3 Bucket Missing Encryption
 [MEDIUM] S3 Bucket Without Versioning Enabled
 [MEDIUM] S3 Bucket Missing Public Access Block Configuration
@@ -403,37 +433,38 @@ func TestTerraformModule(t *testing.T) {
 
 ## Roadmap
 
-Planned enhancements:
+## Roadmap
 
-* LangGraph workflow orchestration
-* Terraform compliance analysis
-* Cost optimization analysis
-* FastAPI REST API
-* Unit tests
-* GitHub Actions CI/CD
-* Additional Terraform security rules
-* Terraform resource graph generation
+- Conditional LangGraph routing
+- Automated remediation generation
+- Cost optimization analysis
+- Terraform compliance checks
+- Unit tests
+- GitHub Actions CI/CD
+- FastAPI REST API
+- Multi-agent analysis workflows
 
 ---
 
 ## Learning Objectives
 
-This project was built to learn and explore:
+This project was built to explore:
 
-* Python
-* OpenAI APIs
-* Prompt Engineering
-* Infrastructure as Code (Terraform)
-* Security Analysis
-* Rule Engines
-* AI-assisted Developer Tools
-* Workflow Orchestration
-* LangGraph Concepts
+- Python
+- Terraform
+- OpenAI APIs
+- Prompt Engineering
+- Infrastructure Security Analysis
+- LangGraph
+- Workflow Orchestration
+- State Management
+- AI-Assisted Developer Tools
+- Rule Engines
 
 ---
 
 ## Version
 
-Current Release:
+All Release:
 v0.1.0 - Initial Terraform AI Reviewer
-
+v0.2.0 - LangGraph Workflow Engine
