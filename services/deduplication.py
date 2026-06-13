@@ -1,5 +1,5 @@
 from typing import List
-from models import Finding
+from models.finding import Finding
 
 
 def deduplicate_findings(findings: List[Finding]) -> List[Finding]:

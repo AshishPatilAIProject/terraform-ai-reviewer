@@ -2,7 +2,8 @@ from openai import OpenAI
 import json
 from typing import List
 from dotenv import load_dotenv
-from models import Finding
+from models.finding import Finding
+from services.normalization import normalize_severity
 
 load_dotenv()
 
@@ -26,7 +27,7 @@ def review_terraform(terraform_code: str) -> List[Finding]:
             Finding(
                 title=item["title"],
                 category=item["category"],
-                severity=item["severity"],
+                severity=normalize_severity(item["severity"]),
                 recommendation=item["recommendation"],
                 source="llm"
             )

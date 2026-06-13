@@ -1,5 +1,5 @@
 from typing import List
-from models import Finding
+from models.finding import Finding
 
 def run_security_checks(terraform_code: str) -> List[Finding]:
     findings: List[Finding] = []

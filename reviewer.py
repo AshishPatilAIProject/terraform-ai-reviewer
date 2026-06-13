@@ -2,12 +2,12 @@ import json
 from typing import List
 from openai import OpenAI
 from dotenv import load_dotenv
-from terraform_reviewer import review_terraform
+from services.terraform_reviewer import review_terraform
 import argparse
-from security_checks import run_security_checks
-from risk_scoring import calculate_score
-from deduplication import deduplicate_findings
-from models import Finding
+from services.security_checks import run_security_checks
+from services.risk_scoring import calculate_score
+from services.deduplication import deduplicate_findings
+from models.finding import Finding
 
 parser = argparse.ArgumentParser()
 
