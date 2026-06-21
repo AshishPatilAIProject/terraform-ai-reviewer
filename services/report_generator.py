@@ -10,7 +10,40 @@ def generate_html_report(state: AnalysisState) -> str:
         "resources",
         []
     )
-)
+    )
+
+    workflow_steps = [
+    ("Parse", True),
+    ("Security Review", True),
+    ("AI Review", True),
+    ("Risk Scoring", True),
+    ("Executive Summary", bool(state.executive_summary)),
+    ("Remediation", bool(state.remediation_plan)),
+    ("Test Generation", bool(state.generated_tests)),
+    ("Report Generation", True)
+    ]
+
+    workflow_html = ""
+
+    for step_name, completed in workflow_steps:
+
+        badge_class = (
+            "workflow-completed"
+            if completed
+            else "workflow-skipped"
+        )
+
+        badge_icon = (
+            "✓"
+            if completed
+            else "✗"
+        )
+
+        workflow_html += f"""
+        <div class="{badge_class}">
+            {badge_icon} {step_name}
+        </div>
+        """
 
     if state.total_score >= 20:
         risk_level = "HIGH"
@@ -248,6 +281,31 @@ pre {{
     border-radius: 8px;
 }}
 
+.workflow-container {{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}}
+
+.workflow-completed {{
+    background: #dcfce7;
+    color: #166534;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+}}
+
+.workflow-skipped {{
+    background: #fee2e2;
+    color: #b91c1c;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+}}
+
 .footer {{
     margin-top: 30px;
     text-align: center;
@@ -273,6 +331,14 @@ pre {{
         {risk_level} RISK
     </div>
 
+    <h3>
+    Workflow Execution
+    </h3>
+
+    <div class="workflow-container">
+        {workflow_html}
+    </div>
+    
 </div>
 
 <div class="cards">
