@@ -6,6 +6,7 @@ from services.terraform_reviewer import review_terraform
 from services.deduplication import deduplicate_findings
 from services.risk_scoring import calculate_score
 from services.test_generator import generate_tests
+from services.remediation_generator import generate_remediation
 
 def parse_node(state: AnalysisState):
 
@@ -101,6 +102,18 @@ def test_generation_node(
 
     return state
 
+def remediation_node(state: AnalysisState):
+
+    state.remediation_plan = generate_remediation(
+        state.findings
+    )
+
+    print(
+        "Generated Remediation Plan"
+    )
+
+    return state
+
 builder = StateGraph(AnalysisState)
 
 builder.add_node(
@@ -133,6 +146,11 @@ builder.add_node(
     test_generation_node
 )
 
+builder.add_node(
+    "remediation",
+    remediation_node
+)
+
 builder.add_edge(
     "parse",
     "security"
@@ -155,6 +173,11 @@ builder.add_edge(
 
 builder.add_edge(
     "score",
+    "remediation"
+)
+
+builder.add_edge(
+    "remediation",
     "generate_tests"
 )
 

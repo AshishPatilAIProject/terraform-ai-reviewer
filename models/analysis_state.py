@@ -19,3 +19,7 @@ class AnalysisState:
     total_score: int = 0
 
     generated_tests: str = ""
+
+    remediation_plan: str = ""
+
+    executive_summary: str = ""
