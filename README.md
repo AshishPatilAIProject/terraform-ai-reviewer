@@ -1,4 +1,4 @@
-# Terraform AI Reviewer
+# Terraform AI Infrastructure Advisor
 
 Terraform AI Reviewer is an AI-assisted Infrastructure-as-Code (IaC) analysis platform built using Python, OpenAI APIs, Terraform, and LangGraph.
 
@@ -8,7 +8,31 @@ The workflow is orchestrated using LangGraph, with a shared AnalysisState flowin
 
 ---
 
+## Dashboard Preview
+
+### Executive Security Dashboard
+
+![Dashboard](screenshots/dashboard-overview.png)
+
+### Findings and Remediation
+
+![Findings](screenshots/findings-remediation.png)
+
 ## Features
+
+## Key Capabilities
+
+- Terraform Parsing
+- Rule-Based Security Analysis
+- AI-Powered Infrastructure Review
+- Finding Categorization
+- Deduplication Engine
+- Risk Scoring Engine
+- Executive Summary Generation
+- AI Remediation Planning
+- Terratest Generation
+- HTML Dashboard Reporting
+- LangGraph Workflow Orchestration
 
 ### Terraform Parsing
 
@@ -169,32 +193,37 @@ Coordinates analysis stages using a shared AnalysisState and LangGraph nodes.
 
 ## LangGraph Workflow
 ```text
-AnalysisState
-      |
-      v
+Terraform Code
+      │
+      ▼
 Terraform Parser
-      |
-      v
-Rule Engine
-      |
-      +------------------+
-      |                  |
-      v                  v
-Security Checks     AI Reviewer
-      |                  |
-      +--------+---------+
-               |
-               v
-      Deduplication
-               |
-               v
-        Risk Scoring
-               |
-               v
-      Terratest Generator
-               |
-               v
-      Updated AnalysisState
+      │
+      ▼
+Security Checks
+      │
+      ▼
+AI Review
+      │
+      ▼
+Deduplication
+      │
+      ▼
+Risk Scoring
+      │
+      ▼
+Executive Summary
+      │
+      ▼
+Remediation Plan
+      │
+      ▼
+Terratest Generator
+      │
+      ▼
+HTML Report Generator
+      │
+      ▼
+Dashboard Report
 ```
 
 ---
@@ -210,24 +239,57 @@ class AnalysisState:
     findings: List[Finding]
     total_score: int
     generated_tests: str
+    remediation_plan: str
+    executive_summary: str
+    report_html: str
 ```
 
 Each node reads from and updates the state, allowing analysis stages to remain loosely coupled.
 ---
 
+### HTML Security Report
+
+The platform generates an interactive HTML dashboard containing:
+
+- Risk Score
+- Executive Summary
+- Findings Table
+- Remediation Plan
+- Terratest Output
+- Resource Statistics
+
+Generated report:
+
+reports/report.html
+
+## Sample Report
+
+The platform generates a dashboard similar to:
+
+- Risk Score: 25
+- High Findings: 2
+- Medium Findings: 1
+- Resources Analyzed: 1
+
+Including:
+- Executive Summary
+- Remediation Plan
+- Terratest
+- Interactive HTML Dashboard
+
 ## Project Structure
 
 ```text
-terraform-ai-reviewer/
+terraform-ai-infrastructure-advisor/
 
-├── reviewer.py
-│
 ├── graphs/
 │   └── review_graph.py
 │
 ├── prompts/
 │   ├── security_check_ai_prompt.md
-│   └── generate_test_prompt.md
+│   ├── generate_test_prompt.md
+│   ├── generate_summary_prompt.md
+│   └── generate_remediation_prompt.md
 │
 ├── models/
 │   ├── finding.py
@@ -237,13 +299,17 @@ terraform-ai-reviewer/
 │   ├── terraform_parser.py
 │   ├── terraform_reviewer.py
 │   ├── security_checks.py
-│   ├── deduplication.py
 │   ├── risk_scoring.py
+│   ├── deduplication.py
 │   ├── normalization.py
-│   └── test_generator.py
+│   ├── test_generator.py
+│   ├── executive_summary_generator.py
+│   ├── remediation_generator.py
+│   └── report_generator.py
 │
-├── sample1.tf
-├── sample2.tf
+├── reports/
+├── screenshots/
+├── reviewer.py
 └── README.md
 ```
 
@@ -416,31 +482,22 @@ func TestTerraformModule(t *testing.T) {
 
 ```
 
----
-
-## Current Capabilities
-
-* Terraform parsing
-* Rule-based security checks
-* AI-powered Terraform review
-* Finding categorization
-* Deduplication
-* Risk scoring
-* Terratest generation
-* Shared workflow state model
-
----
-
 ## Roadmap
 
-- Conditional LangGraph routing
-- Automated remediation generation
-- Cost optimization analysis
-- Terraform compliance checks
-- Unit tests
-- GitHub Actions CI/CD
+### v0.3.0
+- Compliance Mapping (CIS, SOC2, PCI-DSS)
+- Cost Optimization Advisor
+- Drift Detection
+
+### v0.4.0
 - FastAPI REST API
-- Multi-agent analysis workflows
+- Multi-Agent Review Workflow
+- PDF Report Export
+
+### v0.5.0
+- GitHub Pull Request Review Bot
+- Terraform Plan Analysis
+- CloudFormation Support
 
 ---
 
