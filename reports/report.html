@@ -181,7 +181,7 @@ pre {
         </div>
 
         <div class="card-value">
-            21
+            25
         </div>
     </div>
 
@@ -201,7 +201,7 @@ pre {
         </div>
 
         <div class="card-value">
-            0
+            1
         </div>
     </div>
 
@@ -211,7 +211,7 @@ pre {
         </div>
 
         <div class="card-value">
-            1
+            0
         </div>
     </div>
 
@@ -234,7 +234,7 @@ pre {
     </h2>
 
     <div>
-    Overall Risk: HIGH<br><br>Top Risks:<br>- S3 Bucket Missing Encryption<br>- S3 bucket public access not restricted<br><br>Business Impact:<br>Unencrypted S3 buckets and unrestricted public access expose sensitive data to unauthorized users, increasing the risk of data breaches and regulatory non-compliance. Lack of versioning further limits data recovery options after accidental deletions or modifications, impacting business continuity.<br><br>Recommended Action:<br>Enable encryption on all S3 buckets to protect data at rest. Restrict public access policies to prevent unauthorized data exposure. Implement versioning on S3 buckets to enhance data resiliency and recovery capabilities.<br><br>Total Risk Score:<br>21
+    Overall Risk: HIGH<br><br>Top Risks:<br>* S3 Bucket Missing Encryption (Severity: HIGH, Score: 10)<br>* S3 Bucket Without Public Access Controls (Severity: HIGH, Score: 10)<br><br>Business Impact:<br>Unencrypted buckets expose sensitive data to unauthorized access, increasing the risk of data breaches. Lack of public access controls leads to potential data leakage, compromising confidentiality and compliance. Absence of versioning can result in data loss or difficulty recovering from accidental deletions or modifications.<br><br>Recommended Action:<br>Enable encryption at rest on all S3 buckets to secure data. Implement strict public access policies to restrict unauthorized exposure. Activate versioning to facilitate data recovery and maintain data integrity. Regularly audit S3 configurations to ensure compliance with security best practices.
 </div>
 
 </div>
@@ -269,23 +269,23 @@ pre {
         </tr>
         
         <tr>
-            <td class="severity-low">
-                LOW
+            <td class="severity-medium">
+                MEDIUM
             </td>
-            <td>S3 bucket has no versioning enabled</td>
+            <td>S3 Bucket Without Versioning</td>
             <td>
     <span class="category-badge">
         s3_versioning
     </span>
 </td>
-            <td>1</td>
+            <td>5</td>
         </tr>
         
         <tr>
             <td class="severity-high">
                 HIGH
             </td>
-            <td>S3 bucket public access not restricted</td>
+            <td>S3 Bucket Without Public Access Controls</td>
             <td>
     <span class="category-badge">
         s3_public_access
@@ -306,7 +306,7 @@ pre {
     </h2>
 
     <div>
-    Finding: S3 Bucket Missing Encryption  <br>Risk: Unencrypted S3 buckets expose sensitive data to unauthorized access, increasing the risk of data breaches and regulatory non-compliance. Data at rest is vulnerable to interception or theft without encryption.  <br>Terraform Fix:  <br>```hcl<br>resource "aws_s3_bucket" "example" {<br>  bucket = "your-bucket-name"<br>  <br>  server_side_encryption_configuration {<br>    rule {<br>      apply_server_side_encryption_by_default {<br>        sse_algorithm = "AES256"<br>      }<br>    }<br>  }<br>}<br>```<br><br>Finding: S3 bucket has no versioning enabled  <br>Risk: Without versioning, accidental deletions or overwrites of objects are irreversible, leading to potential data loss or corruption. Versioning enables easier recovery and data integrity.  <br>Terraform Fix:  <br>```hcl<br>resource "aws_s3_bucket_versioning" "example_versioning" {<br>  bucket = aws_s3_bucket.example.id<br><br>  versioning_configuration {<br>    status = "Enabled"<br>  }<br>}<br>```<br><br>Finding: S3 bucket public access not restricted  <br>Risk: Public access to S3 buckets can expose sensitive data to anyone on the internet, leading to data leaks and unauthorized data manipulation. It violates security best practices.  <br>Terraform Fix:  <br>```hcl<br>resource "aws_s3_bucket_public_access_block" "example_public_access" {<br>  bucket = aws_s3_bucket.example.id<br><br>  block_public_acls       = true<br>  block_public_policy     = true<br>  ignore_public_acls      = true<br>  restrict_public_buckets = true<br>}<br>```
+    Finding: S3 Bucket Missing Encryption<br><br>Risk: Data stored in the S3 bucket is unencrypted at rest, increasing the risk of unauthorized access and data breaches.<br><br>Terraform Fix:<br>```hcl<br>resource "aws_s3_bucket" "example" {<br>  bucket = "example-bucket"<br>}<br><br>resource "aws_s3_bucket_server_side_encryption_configuration" "example" {<br>  bucket = aws_s3_bucket.example.id<br><br>  rule {<br>    apply_server_side_encryption_by_default {<br>      sse_algorithm = "AES256"<br>    }<br>  }<br>}<br>```<br><br>---<br><br>Finding: S3 Bucket Without Versioning<br><br>Risk: Lack of versioning increases the risk of permanent data loss or accidental overwrites with no ability to recover previous versions.<br><br>Terraform Fix:<br>```hcl<br>resource "aws_s3_bucket" "example" {<br>  bucket = "example-bucket"<br><br>  versioning {<br>    enabled = true<br>  }<br>}<br>```<br><br>---<br><br>Finding: S3 Bucket Without Public Access Controls<br><br>Risk: The bucket is potentially exposed to public access, risking unauthorized data exposure or tampering.<br><br>Terraform Fix:<br>```hcl<br>resource "aws_s3_bucket_public_access_block" "example" {<br>  bucket = aws_s3_bucket.example.id<br><br>  block_public_acls       = true<br>  block_public_policy     = true<br>  ignore_public_acls      = true<br>  restrict_public_buckets = true<br>}<br>```
 </div>
 
 </div>
@@ -322,54 +322,32 @@ package test
 
 import (
 	"testing"
-	"os"
 	"os/exec"
-	"path/filepath"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 )
 
-// Since the Terraform code was not provided, this is a generic Terratest example.
-// Replace variables and paths according to your Terraform configuration.
-
-func TestTerraformExample(t *testing.T) {
+func TestTerraformConfiguration(t *testing.T) {
 	t.Parallel()
 
-	// Copy Terraform folder to temp folder to run tests in isolated environment
-	tempTestFolder := filepath.Join(os.TempDir(), "terratest-example")
-	err := os.MkdirAll(tempTestFolder, 0755)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	// Copy files (if needed)
-	// e.g. copy your terraform files to tempTestFolder, if your test depends on it
-
 	terraformOptions := &terraform.Options{
-		// Path to Terraform code
-		TerraformDir: "../path-to-your-terraform-code",
+		// The path to where our Terraform code is located
+		TerraformDir: "../",
 
-		// Variables to pass to Terraform
-		Vars: map[string]interface{}{
-			// "variable_name": "value",
-		},
-
-		// Disable colors in Terraform commands so its easier to parse stdout/stderr
-		NoColor: true,
+		// Variables to pass to our Terraform code using -var options
+		// Vars: map[string]interface{}{},
 	}
 
-	// Clean up resources with "terraform destroy" at the end of the test
+	// Run 'terraform init' and 'terraform apply'. Fail the test if there are any errors.
 	defer terraform.Destroy(t, terraformOptions)
-
-	// Run "terraform init" and "terraform apply"
 	terraform.InitAndApply(t, terraformOptions)
 
-	// Add your test assertions here
-	// For example, check the output variable value:
-	output := terraform.Output(t, terraformOptions, "example_output")
-	expectedOutput := "expected_value"
-	assert.Equal(t, expectedOutput, output)
+	// Run custom validation commands if needed.
+	cmd := exec.Command("terraform", "validate")
+	cmd.Dir = terraformOptions.TerraformDir
+	err := cmd.Run()
+	assert.NoError(t, err)
 }
 ```</pre>
 
