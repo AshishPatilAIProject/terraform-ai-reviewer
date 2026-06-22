@@ -21,37 +21,44 @@ The workflow is orchestrated using LangGraph, with a shared AnalysisState flowin
 ## Features
 
 ## Key Capabilities
-Terraform Analysis
-Terraform resource parsing
-Resource inventory generation
-Infrastructure metadata extraction
-Security Review
-Rule-based security checks
-AI-powered infrastructure review
-Finding categorization
-Severity normalization
-Risk Assessment
-Risk scoring engine
-Deduplication of findings
-Overall security posture evaluation
-AI Infrastructure Advisor
-Executive summary generation
-AI remediation planning
-Terraform fix recommendations
-Testing
-Terratest generation
-Infrastructure validation templates
-Reporting
-Interactive HTML dashboard
-Executive summary section
-Findings table
-Workflow execution visualization
-Remediation guidance
-Generated test scripts
-Workflow Orchestration
-LangGraph-based workflow engine
-Conditional routing
-Risk-aware execution paths
+
+**Terraform Analysis**
+- Terraform resource parsing
+- Resource inventory generation
+- Infrastructure metadata extraction
+
+**Security Review**
+- Rule-based security checks
+- AI-powered infrastructure review
+- Finding categorization
+- Severity normalization
+
+**Risk Assessment**
+- Risk scoring engine
+- Deduplication of findings
+- Overall security posture evaluation
+
+**AI Infrastructure Advisor**
+- Executive summary generation
+- AI remediation planning
+- Terraform fix recommendations
+
+**Testing**
+- Terratest generation
+- Infrastructure validation templates
+
+**Reporting**
+- Interactive HTML dashboard
+- Executive summary section
+- Findings table
+- Workflow execution visualization
+- Remediation guidance
+- Generated test scripts
+
+**Workflow Orchestration**
+- LangGraph-based workflow engine
+- Conditional routing
+- Risk-aware execution paths
 
 ### Terraform Parsing
 
@@ -212,6 +219,7 @@ Coordinates analysis stages using a shared AnalysisState and LangGraph nodes.
 
 ## Architecture
 
+```text
 Terraform Code
 │
 ▼
@@ -233,15 +241,16 @@ Risk Scoring Engine
 Conditional Routing
 │
 ├── Low Risk
-│ ├── Executive Summary
-│ ├── Test Generation
-│ └── HTML Report
+│   ├── Executive Summary
+│   ├── Test Generation
+│   └── HTML Report
 │
 └── High Risk
-├── Executive Summary
-├── Remediation Generation
-├── Test Generation
-└── HTML Report
+    ├── Executive Summary
+    ├── Remediation Generation
+    ├── Test Generation
+    └── HTML Report
+```
 
 ## LangGraph Workflow
 ```text
@@ -490,7 +499,7 @@ func TestTerraformModule(t *testing.T) {
         // Optionally, add validations/assertions for your Terraform outputs here using:
         // output := terraform.Output(t, terraformOptions, "output_name")
 }
-```
+```   
 
 ## Roadmap
 
@@ -531,5 +540,6 @@ This project was built to explore:
 ## Version
 
 All Release:
-v0.1.0 - Initial Terraform AI Reviewer
-v0.2.0 - LangGraph Workflow Engine
+
+- v0.1.0 - Initial Terraform AI Reviewer
+- v0.2.0 - LangGraph Workflow Engine
