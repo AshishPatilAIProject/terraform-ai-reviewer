@@ -18,8 +18,6 @@ The workflow is orchestrated using LangGraph, with a shared AnalysisState flowin
 
 ![Findings](screenshots/findings-remediation.png)
 
-## Features
-
 ## Key Capabilities
 
 **Terraform Analysis**
