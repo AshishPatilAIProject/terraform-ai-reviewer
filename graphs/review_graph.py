@@ -14,7 +14,8 @@ import os
 from services.agents.security_agent import run_security_agent
 from services.agents.compliance_agent import run_compliance_agent
 from services.agents.cost_agent import run_cost_agent
-from services.agents.compliance_agent_llm import run_compliance_llm
+from services.compliance_report_generator import generate_compliance_report
+from services.cost_report_generator import generate_cost_report
 
 def parse_node(state: AnalysisState):
 
@@ -105,13 +106,27 @@ def compliance_report_node(
 ):
 
     state.compliance_report = (
-        run_compliance_llm(
+        generate_compliance_report(
             state.findings
         )
     )
 
     print(
         "Generated Compliance Report"
+    )
+
+    return state
+
+def cost_report_node(
+    state: AnalysisState
+):
+
+    state.cost_report = generate_cost_report(
+        state.findings
+    )
+
+    print(
+        "Generated Cost Report"
     )
 
     return state
@@ -280,8 +295,18 @@ builder.add_node(
 )
 
 builder.add_node(
+    "compliance_report",
+    compliance_report_node
+)
+
+builder.add_node(
     "cost_agent",
     cost_agent_node
+)
+
+builder.add_node(
+    "cost_report",
+    cost_report_node
 )
 
 builder.add_node(
@@ -331,11 +356,21 @@ builder.add_edge(
 
 builder.add_edge(
     "compliance_agent",
+    "compliance_report"
+)
+
+builder.add_edge(
+    "compliance_report",
     "cost_agent"
 )
 
 builder.add_edge(
     "cost_agent",
+    "cost_report"
+)
+
+builder.add_edge(
+    "cost_report",
     "dedup"
 )
 

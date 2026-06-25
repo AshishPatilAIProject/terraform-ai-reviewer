@@ -27,4 +27,6 @@ class AnalysisState:
 
     compliance_report: str = ""
 
+    cost_report: str = ""
+
     report_html: str = ""

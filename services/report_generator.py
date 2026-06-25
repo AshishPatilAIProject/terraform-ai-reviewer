@@ -1,3 +1,5 @@
+import markdown
+
 from models.analysis_state import AnalysisState
 
 
@@ -5,8 +7,10 @@ def generate_html_report(state: AnalysisState) -> str:
 
     findings_html = ""
     compliance_html = ""
+    compliance_report_html = ""
     cost_html = ""
     resources_html = ""
+    cost_report_html = ""
 
     resource_count = len(
     state.parsed_terraform.get(
@@ -189,6 +193,45 @@ def generate_html_report(state: AnalysisState) -> str:
         </tr>
         """
 
+    compliance_report_html = f"""
+        <div class="section ai-card">
+
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                margin-bottom:15px;
+            ">
+
+                <h2 style="margin:0;">
+                    🧠 AI Compliance Advisor
+                </h2>
+
+                <span class="ai-badge">
+                    AI Generated
+                </span>
+
+            </div>
+
+            <div class="markdown">
+                {markdown.markdown(state.compliance_report)}
+            </div>
+
+            <hr style="
+                margin-top:20px;
+                border:none;
+                border-top:1px solid #dbeafe;
+            ">
+
+            <div class="ai-note">
+                Generated using deterministic compliance mappings combined with
+                LLM-based explanations. No additional compliance findings were
+                created.
+            </div>
+
+        </div>
+        """
+
     for finding in cost_findings:
 
         severity_class = (
@@ -214,6 +257,44 @@ def generate_html_report(state: AnalysisState) -> str:
             </td>
         </tr>
         """
+
+    cost_report_html = f"""
+        <div class="section ai-card">
+
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:15px;
+        ">
+
+        <h2 style="margin:0;">
+            💰 AI Cost Advisor
+        </h2>
+
+        <span class="ai-badge">
+            AI Generated
+        </span>
+
+        </div>
+
+        <div class="markdown">
+            {markdown.markdown(state.cost_report)}
+        </div>
+
+        <hr style="
+            margin-top:20px;
+            border:none;
+            border-top:1px solid #dbeafe;
+        ">
+
+        <div class="ai-note">
+            Generated using deterministic cost optimization findings combined
+            with LLM-based recommendations. No additional cost findings were
+            created.
+        </div>
+    </div>
+    """
 
     html = f"""
 <!DOCTYPE html>
@@ -394,6 +475,67 @@ pre {{
     border-radius: 999px;
     font-size: 13px;
     font-weight: 600;
+}}
+
+.ai-card{{
+    background:#f6fbff;
+    border-left:5px solid #2563eb;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+}}
+
+.ai-badge{{
+    background:#2563eb;
+    color:white;
+    padding:6px 12px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:bold;
+}}
+
+.ai-note{{
+    margin-top:15px;
+    padding:12px;
+    background:#eff6ff;
+    border-left:4px solid #2563eb;
+    font-size:13px;
+    color:#1e3a8a;
+    border-radius:8px;
+}}
+
+    .markdown h1,
+    .markdown h2,
+    .markdown h3{{
+    margin-top:20px;
+    color:#111827;
+}}
+
+    .markdown ul{{
+        padding-left:22px;
+}}
+
+    .markdown li{{
+        margin-bottom:8px;
+}}
+
+    .markdown p{{
+        line-height:1.7;
+}}
+
+    .markdown code{{
+        background:#eef2ff;
+        padding:2px 5px;
+        border-radius:4px;
+        font-family:Consolas, monospace;
+}}
+
+    .markdown pre{{
+        background:#0f172a;
+        color:#f8fafc;
+        padding:15px;
+        border-radius:8px;
+        overflow-x:auto;
 }}
 
 .footer {{
@@ -577,6 +719,8 @@ pre {{
     </table>
 </div>
 
+{compliance_report_html}
+
 <div class="section">
     <h2>
     Cost Optimization Opportunities
@@ -595,6 +739,8 @@ pre {{
     </table>
 
 </div>
+
+{cost_report_html}
 
 <div class="section">
 

@@ -1,69 +1,125 @@
-# # Terraform AI Infrastructure Advisor
+# Terraform AI Infrastructure Advisor
 
-Terraform AI Infrastructure Advisor is an AI-powered Infrastructure-as-Code (IaC) security platform built using Python, OpenAI, LangGraph, FastAPI, and Terraform.
+Terraform AI Infrastructure Advisor is an AI-powered Infrastructure-as-Code (IaC) security and governance platform built using Python, OpenAI, LangGraph, FastAPI, and Terraform.
 
-The platform combines deterministic security checks with AI-powered infrastructure analysis to identify security risks, calculate risk scores, generate executive summaries, create remediation plans, produce Terratest templates, and generate interactive HTML dashboard reports.
+The platform combines deterministic rule-based analysis with LLM-powered advisory agents to identify security risks, assess compliance, discover cost optimization opportunities, calculate infrastructure risk scores, generate executive summaries, produce remediation plans, create Terratest templates, and generate interactive HTML dashboard reports.
 
-The workflow is orchestrated using LangGraph with conditional routing, allowing the platform to dynamically choose execution paths based on infrastructure risk levels.
+The analysis workflow is orchestrated using LangGraph with conditional routing, enabling a multi-agent architecture that dynamically adapts its execution based on the infrastructure's risk profile.
 
-The platform is available through:
+The platform is accessible through:
 
 * Command Line Interface (CLI)
 * FastAPI REST API
 * File Upload API
 * Interactive HTML Dashboard Reports
 
+
 ---
 
-## Dashboard Preview
-
-### Executive Security Dashboard
-
+## Dashboard Overview
 ![Dashboard](screenshots/dashboard-overview.png)
 
-### Findings and Remediation
+### Executive Summary and Infra Inventory
+![Dashboard](screenshots/executive-summary-infra-inventory.png)
 
-![Findings](screenshots/findings-remediation.png)
+### Security Findings (Deterministic rule based + LLM)
+![Findings](screenshots/security-findings.png)
+
+### Compliance Findings (Deterministic rule based + LLM)
+![Findings](screenshots/compliance-deterministic-and-llm.png)
+
+### Cost Optimizations (Deterministic rule based + LLM)
+![Findings](screenshots/cost-deterministic-plus-llm.png)
+
+### Remediation Plan (LLM based)
+![Findings](screenshots/remedeation-plan-llm.png)
+
+### Terratests (LLM based)
+![Findings](screenshots/terratest-llm.png)
 
 ## Key Capabilities
 
-**Terraform Analysis**
-- Terraform resource parsing
-- Resource inventory generation
-- Infrastructure metadata extraction
+### Infrastructure Analysis
 
-**Security Review**
-- Rule-based security checks
-- AI-powered infrastructure review
-- Finding categorization
-- Severity normalization
+* Terraform resource parsing
+* Resource inventory generation
+* Infrastructure metadata extraction
 
-**Risk Assessment**
-- Risk scoring engine
-- Deduplication of findings
-- Overall security posture evaluation
+### Security Analysis
 
-**AI Infrastructure Advisor**
-- Executive summary generation
-- AI remediation planning
-- Terraform fix recommendations
+* Rule-based security checks
+* AI-powered infrastructure review
+* Finding categorization
+* Severity normalization
+* Security finding deduplication
 
-**Testing**
-- Terratest generation
-- Infrastructure validation templates
+### Multi-Agent Architecture
 
-**Reporting**
-- Interactive HTML dashboard
-- Executive summary section
-- Findings table
-- Workflow execution visualization
-- Remediation guidance
-- Generated test scripts
+* Security Agent
+* Compliance Agent
+* Cost Optimization Agent
+* AI Compliance Advisor
+* AI Cost Advisor
 
-**Workflow Orchestration**
-- LangGraph-based workflow engine
-- Conditional routing
-- Risk-aware execution paths
+### Compliance & Governance
+
+* CIS AWS Foundations mapping
+* SOC2 control mapping
+* PCI-DSS control mapping
+* AI-generated compliance assessment
+
+### Cost Optimization
+
+* Infrastructure cost analysis
+* Storage optimization recommendations
+* EC2 rightsizing recommendations
+* AI-generated cost optimization report
+
+### Risk Assessment
+
+* Infrastructure risk scoring
+* Overall security posture evaluation
+* Risk-aware execution paths
+* Conditional workflow routing
+
+### AI Infrastructure Advisor
+
+* Executive summary generation
+* AI remediation planning
+* Terraform fix recommendations
+* Executive compliance assessment
+* Executive cost optimization assessment
+
+### Infrastructure Testing
+
+* AI-generated Terratest templates
+* Infrastructure validation templates
+
+### Reporting
+
+* Interactive HTML dashboard
+* Executive dashboard
+* Infrastructure inventory
+* Security findings
+* Compliance impact report
+* Cost optimization report
+* Workflow execution visualization
+* Multi-Agent architecture diagram
+* Generated Terratest scripts
+
+### API & Automation
+
+* Command Line Interface (CLI)
+* FastAPI REST API
+* Terraform file upload API
+* HTML report generation
+
+### Workflow Orchestration
+
+* LangGraph workflow engine
+* Multi-Agent orchestration
+* Conditional routing
+* Dynamic execution based on infrastructure risk
 
 ## REST API
 
@@ -85,358 +141,157 @@ After starting the API server:
 
 ```bash
 uvicorn api.main:app --reload
-```
 
-Open:
+The API will be available at `http://127.0.0.1:8000`, with interactive docs at `http://127.0.0.1:8000/docs`.
 
-```text
-http://localhost:8000/docs
 ```
 
 to explore and test all API endpoints interactively.
 
+## LangGraph Workflow Orchestration
 
-### Terraform Parsing
+The platform is orchestrated using **LangGraph**, where each stage operates on a shared `AnalysisState`. The workflow combines deterministic analysis, AI-powered advisory agents, and conditional routing to dynamically adapt execution based on the infrastructure's risk profile.
 
-Parses Terraform files and extracts infrastructure resource metadata.
 
-Example:
-
-```terraform
-resource "aws_s3_bucket" "example" {
-  bucket = "my-demo-bucket"
-}
-```
-
-Parsed output:
-
-```json
-{
-  "resources": [
-    {
-      "type": "aws_s3_bucket",
-      "name": "example"
-    }
-  ]
-}
-```
-
----
-
-### Rule-Based Security Checks
-
-Deterministic security checks identify common Terraform misconfigurations.
-
-Current checks:
-
-* Open SSH access (`0.0.0.0/0`)
-* Missing S3 bucket encryption
-
-Example finding:
-
-```text
-[HIGH] Open Internet Access Detected
-```
-
----
-
-### AI-Powered Terraform Review
-
-Uses OpenAI models to identify additional security issues such as:
-
-* Missing versioning
-* Missing public access block configuration
-* Security best practice violations
-* Infrastructure recommendations
-
----
-
-### Finding Normalization
-
-Normalizes AI output into a consistent internal format.
-
-Example:
-
-```text
-high
-HIGH
-High
-```
-
-becomes:
-
-```text
-HIGH
-```
-
----
-
-### Finding Categorization
-
-All findings are mapped into categories such as:
-
-```text
-open_ssh
-s3_encryption
-s3_versioning
-s3_public_access
-```
-
-This allows findings from multiple analysis engines to be compared consistently.
-
----
-
-### Deduplication Engine
-
-Removes duplicate findings produced by both:
-
-* Rule Engine
-* AI Reviewer
-
-Example:
-
-```text
-Rule Engine:
-S3 Bucket Missing Encryption
-
-AI:
-S3 Bucket Without Server-Side Encryption
-```
-
-Both are categorized as:
-
-```text
-s3_encryption
-```
-
-Only one finding is retained.
-
----
-
-### Risk Scoring
-
-Findings are assigned severity scores.
-
-| Severity | Score |
-| -------- | ----- |
-| HIGH     | 10    |
-| MEDIUM   | 5     |
-| LOW      | 1     |
-
-Example:
-
-```text
-HIGH + MEDIUM + HIGH
-
-10 + 5 + 10
-
-Total Risk Score = 25
-```
-
----
-
-### Terratest Generation
-
-Generates starter Terratest code from Terraform configurations.
-
-Example output:
-
-```go
-func TestTerraformModule(t *testing.T) {
-    terraform.InitAndApply(t, terraformOptions)
-}
-```
-
-### LangGraph Workflow Orchestration
-
-Coordinates analysis stages using a shared AnalysisState and LangGraph nodes.
-
----
-
-## Architecture
-
-```text
 ## Platform Architecture
 
 ```text
-
-Terraform Code
-       │
-       ▼
-FastAPI API Layer
-       │
-       ▼
-LangGraph Workflow
-       │
- ┌─────┴─────┐
- │           │
- ▼           ▼
-Rule Engine  AI Review
- │           │
- └─────┬─────┘
-       ▼
- Deduplication
-       ▼
- Risk Scoring
-       ▼
- Conditional Routing
-       │
- ┌─────┴────────────┐
- │                  │
- ▼                  ▼
-Low Risk         High Risk
- │                  │
- ▼                  ▼
-Summary         Summary
-Tests           Remediation
-Report          Tests
-                Report
+                        Terraform Code
+                               │
+                               ▼
+                        FastAPI / CLI
+                               │
+                               ▼
+                    LangGraph Workflow Engine
+                               │
+                               ▼
+                      Parse Terraform Resources
+                               │
+                               ▼
+                     Rule-Based Security Checks
+                               │
+                               ▼
+                     AI Security Review Agent
+                               │
+                               ▼
+                Compliance Mapping Agent
+                               │
+                               ▼
+                  AI Compliance Advisor
+                               │
+                               ▼
+                  Cost Optimization Agent
+                               │
+                               ▼
+                    AI Cost Advisor
+                               │
+                               ▼
+                 Deduplication & Risk Scoring
+                               │
+                               ▼
+                    Conditional Routing
+                     (Risk-Aware Execution)
+                               │
+                ┌──────────────┴──────────────┐
+                │                             │
+                ▼                             ▼
+          Low Risk Path                 High Risk Path
+                │                             │
+                ▼                             ▼
+     Executive Summary            Executive Summary
+                │                             │
+                ├──────────────┐              │
+                ▼              ▼              ▼
+      HTML Report       Terratest      AI Remediation Plan
+          Generation     Generation            │
+                │              │               ▼
+                └──────────────┴──────► HTML Report
+                                       Generation
 
 ```
 
-## LangGraph Workflow
-```text
-The platform uses LangGraph to orchestrate analysis and reporting.
+## Multi-Agent Workflow
+![Dashboard](screenshots/Multi-Agent-Arch-Dia.png)
 
-Current workflow:
+### HTML Infrastructure Advisor Report
 
-Parse
-↓
-Security Review
-↓
-AI Review
-↓
-Deduplication
-↓
-Risk Scoring
-↓
-Conditional Routing
-↓
-Executive Summary
-↓
-Remediation (High Risk Only)
-↓
-Terratest Generation
-↓
-HTML Report
-```
+The platform generates an interactive HTML dashboard that consolidates deterministic analysis and AI-powered insights into a single executive report.
 
----
+The dashboard includes:
 
-## Conditional Routing
+* Infrastructure Risk Score
+* Infrastructure Inventory
+* Agent Breakdown
+* Workflow Execution Status
+* Executive Summary
+* Security Findings
+* Compliance Impact
+* AI Compliance Advisor
+* Cost Optimization Opportunities
+* AI Cost Advisor
+* AI Remediation Plan
+* Generated Terratest Template
 
-The workflow dynamically chooses execution paths based on risk score.
-
-Low Risk Path
-
-Risk Score < 20
-
-Executive Summary
-Terratest Generation
-HTML Report
-
-Remediation generation is skipped.
-
-High Risk Path
-
-Risk Score >= 20
-
-Executive Summary
-AI Remediation Plan
-Terratest Generation
-HTML Report
-
-## Shared Workflow State
-
-The application uses a shared AnalysisState object that flows through all LangGraph nodes.
-
-```python
-@dataclass
-class AnalysisState:
-    terraform_code: str
-    parsed_terraform: Dict[str, Any]
-    findings: List[Finding]
-    total_score: int
-    generated_tests: str
-    remediation_plan: str
-    executive_summary: str
-    report_html: str
-```
-
-Each node reads from and updates the state, allowing analysis stages to remain loosely coupled.
----
-
-### HTML Security Report
-
-The platform generates an interactive HTML dashboard containing:
-
-Risk Score
-Resource Statistics
-Workflow Execution Status
-Executive Summary
-Security Findings
-Remediation Plan
-Terratest Output
-
-Generated report:
-
-reports/report.html
-
-## Sample Report
-
-The platform generates a dashboard similar to:
-
-- Risk Score: 25
-- High Findings: 2
-- Medium Findings: 1
-- Resources Analyzed: 1
-
-Including:
-- Executive Summary
-- Remediation Plan
-- Terratest
-- Interactive HTML Dashboard
+**Generated Report**
+- reports/report.html
 
 ## Project Structure
 
 ```text
-terraform-ai-infrastructure-advisor/
-
-├── graphs/
-│   └── review_graph.py
+terraform-ai-reviewer/
+├── .env
+├── .gitignore
+├── README.md
+├── reviewer.py                         # CLI entry point
 │
-├──api/
-|   ├── main.py
-|   └── schemas.py
-|
-├── prompts/
-│   ├── security_check_ai_prompt.md
-│   ├── generate_test_prompt.md
-│   ├── generate_summary_prompt.md
-│   └── generate_remediation_prompt.md
+├── api/
+│   ├── main.py                         # FastAPI app
+│   └── schemas.py                      # Request/response models
+│
+├── graphs/
+│   └── review_graph.py                 # LangGraph workflow
 │
 ├── models/
-│   ├── finding.py
-│   └── analysis_state.py
+│   ├── __init__.py
+│   ├── finding.py                      # Finding dataclass
+│   └── analysis_state.py               # Shared workflow state
+│
+├── prompts/
+│   ├── security_check_ai_prompt.md
+│   ├── generate_summary_prompt.md
+│   ├── generate_remediation_prompt.md
+│   ├── generate_test_prompt.md
+│   ├── generate_compliance_report_prompt.md
+│   └── generate_cost_report_prompt.md
+│
+├── reports/
+│   └── report.html                     # Generated HTML report
 │
 ├── services/
 │   ├── terraform_parser.py
-│   ├── terraform_reviewer.py
 │   ├── security_checks.py
-│   ├── risk_scoring.py
+│   ├── terraform_reviewer.py
 │   ├── deduplication.py
+│   ├── risk_scoring.py
 │   ├── normalization.py
-│   ├── test_generator.py
 │   ├── executive_summary_generator.py
 │   ├── remediation_generator.py
+│   ├── test_generator.py
+│   ├── compliance_mapping.py
+│   ├── compliance_report_generator.py
+│   ├── cost_report_generator.py
 │   ├── report_generator.py
-|   └── report_storage.py
+│   ├── report_storage.py
+│   └── agents/
+│       ├── security_agent.py
+│       ├── compliance_agent.py
+│       └── cost_agent.py
 │
-├── reports/
-|   └── report.html
-├── screenshots/
-├── reviewer.py
-└── README.md
+└── tests/
+    ├── sample1LowRiskScore.tf
+    ├── sample2HighRiskScore.tf
+    ├── sample3WithNoRiskScore.tf
+    └── multi_agent_sample.tf
 ```
 
 ---
@@ -505,129 +360,98 @@ Review Terraform:
 python reviewer.py sample1.tf
 ```
 
-Example output:
+Console output:
 
 ```text
-Parsed: {'resources': [{'type': 'aws_security_group', 'name': 'web'}]}
+Parsed: {'resources': [{'type': 'aws_s3_bucket', 'name': 'data'}, {'type': 'aws_security_group', 'name': 'web'}, {'type': 'aws_instance', 'name': 'app'}]}
 Security Findings: 1
-Total Findings After AI: 2
-Deduplicated: 2 -> 1
-[HIGH] Open Internet Access Detected
-
-Total Risk Score: 10
-
-Generated Terratest:
-========================================
-```go
-package test
-
-import (
-        "testing"
-        "os"
-        "path/filepath"
-
-        "github.com/gruntwork-io/terratest/modules/terraform"
-)
-
-func TestTerraformModule(t *testing.T) {
-        t.Parallel()
-
-        // Construct the path to the Terraform code folder
-        terraformDir := filepath.FromSlash("../path/to/terraform/code")
-
-        // Terraform options
-        terraformOptions := &terraform.Options{
-                TerraformDir: terraformDir,
-
-                // Variables to pass to Terraform
-                Vars: map[string]interface{}{},
-        }
-
-        // Clean up resources with "terraform destroy" at the end of the test
-        defer terraform.Destroy(t, terraformOptions)
-
-        // Initialize and apply Terraform code
-        terraform.InitAndApply(t, terraformOptions)
-
-        // Optionally, add validations/assertions for your Terraform outputs here using:
-        // output := terraform.Output(t, terraformOptions, "output_name")
-}
+Security Agent Findings: 4
+Compliance Agent Findings: 3
+Generated Compliance Report
+Cost Agent Findings: 3
+Generated Cost Report
+Deduplicated: 11 -> 10
+Risk Score: 52
+.
+.
+.
 ```   
-
-### Run the API Server
-
-Start the FastAPI server with Uvicorn:
-
-```bash
-uvicorn api.main:app --reload
-```
-
-The API will be available at `http://127.0.0.1:8000`, with interactive docs at `http://127.0.0.1:8000/docs`.
-
-## Roadmap
-
-### v0.3.0 (Completed)
-- LangGraph Workflow Engine
-- Conditional Routing
-- Executive Summary Generator
-- Remediation Generator
-- HTML Dashboard Reporting
-- FastAPI REST API
-- File Upload API
-- Report Viewing Endpoint
-
-### v0.4.0
-- Compliance Mapping (CIS, SOC2, PCI-DSS)
-- Multi-Agent Review Workflow
-- Cost Optimization Advisor
-- Drift Detection
-
-### v0.5.0
-- GitHub Pull Request Review Bot
-- Terraform Plan Analysis
-- CloudFormation Support
-- PDF Report Export
-
----
-
 ## Release History
 
-v0.1.0
-- Terraform Security Review
-- Rule Engine
-- OpenAI Analysis
-- Risk Scoring
-- Terratest Generation
+### v0.1.0 (Completed)
 
-v0.2.0
-- LangGraph Workflow Engine
-- AnalysisState
-- Deduplication Pipeline
-- Executive Summary Generation
-- Remediation Generation
-- HTML Dashboard
+* Terraform Security Review
+* Rule-Based Security Engine
+* OpenAI Infrastructure Analysis
+* Risk Scoring Engine
+* Terratest Generation
 
-v0.3.0
-- FastAPI REST API
-- Swagger Documentation
-- File Upload API
-- HTML Report Endpoint
-- Conditional Routing
-- Interactive Dashboard Experience
+### v0.2.0 (Completed)
+
+* LangGraph Workflow Engine
+* AnalysisState Pipeline
+* Deduplication Engine
+* Executive Summary Generator
+* AI Remediation Generator
+* Interactive HTML Dashboard
+
+### v0.3.0 (Completed)
+
+* FastAPI REST API
+* Swagger Documentation
+* File Upload API
+* HTML Report Endpoint
+* LangGraph Workflow Engine
+* Conditional Routing
+* Interactive HTML Dashboard
+
+### v0.4.0 (Completed)
+
+* Multi-Agent Architecture
+* Security Agent
+* Compliance Agent
+* Cost Optimization Agent
+* Compliance Mapping (CIS AWS Foundations, SOC2, PCI-DSS)
+* Infrastructure Inventory
+* Agent Breakdown Dashboard
+* Multi-Agent Workflow Visualization
+* AI Compliance Advisor
+* AI Cost Advisor
+* Enhanced HTML Dashboard
+* AI-Powered Compliance Assessment
+* AI-Powered Cost Optimization Report
+* Multi-Agent Architecture Diagram
+
+### v0.5.0 (Planned)
+
+* Drift Detection Agent
+* Terraform Plan Analysis
+* GitHub Pull Request Review Bot
+* PDF Report Export
+* CloudFormation Support
+* Kubernetes Manifest Support
+* Parallel Agent Execution
+* Agent Memory & Context Sharing
 
 ## Learning Objectives
 
-This project was built to explore:
+This project was built to explore modern AI engineering patterns for Infrastructure-as-Code (IaC) analysis, including:
 
-- Python
-- Terraform
-- OpenAI APIs
-- Prompt Engineering
-- Infrastructure Security Analysis
-- LangGraph
-- Workflow Orchestration
-- State Management
-- AI-Assisted Developer Tools
-- Rule Engines
+* Python application development
+* Terraform Infrastructure-as-Code analysis
+* OpenAI API integration
+* Prompt engineering and AI system design
+* LangGraph workflow orchestration
+* Multi-Agent AI architecture
+* Shared state management with AnalysisState
+* Deterministic rule engines
+* AI-powered infrastructure advisory
+* Infrastructure security analysis
+* Compliance mapping (CIS, SOC2, PCI-DSS)
+* Cost optimization analysis
+* Conditional workflow routing
+* FastAPI REST API development
+* Interactive HTML dashboard generation
+* AI-assisted developer productivity tools
 
 ---
